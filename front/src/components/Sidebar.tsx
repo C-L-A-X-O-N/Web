@@ -26,11 +26,13 @@ export default function Sidebar() {
       sx={{
         width: drawerWidth,
         flexShrink: 0,
-        [`& .MuiDrawer-paper`]: { width: drawerWidth, boxSizing: 'border-box', top: 64 },
+        [`& .MuiDrawer-paper`]: { width: drawerWidth, boxSizing: 'border-box'},
+        top:'64px'
       }}
     >
       <Toolbar />
       <Box sx={{ overflow: 'auto', p: 2 }}>
+        <Toolbar />
         <Typography variant="subtitle1" sx={{ mb: 1 }}>
           Liste des événements :
         </Typography>

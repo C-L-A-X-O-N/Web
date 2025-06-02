@@ -16,7 +16,7 @@ export default function Footer() {
       }}
     >
       <Typography variant="body2" color="textSecondary">
-        © 2025 C-L-A-X-O-N — Tous droits réservés.
+        Voiliiii Bam !
       </Typography>
     </Box>
   );

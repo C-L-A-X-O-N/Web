@@ -10,8 +10,7 @@ function NavigationTabs() {
 
   return (
     <Box>
-      <AppBar
-        position="fixed"
+      <AppBar position="fixed"
         sx={{
           zIndex: (theme) => theme.zIndex.drawer + 1,
           backgroundColor: '#e0e0e0',
@@ -36,14 +35,9 @@ function NavigationTabs() {
         >
           <Tab label="Événements" />
           <Tab label="Paramètres SUMO" />
+
         </Tabs>
       </AppBar>
-
-      <Box sx={{ p: 2 }}>
-        {value === 0 && <Typography>Contenu des Événements</Typography>}
-        {value === 1 && <Typography>Contenu des Paramètres SUMO</Typography>}
-      </Box>
-
       </Box>
   );
 }
