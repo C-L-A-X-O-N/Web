@@ -51,6 +51,7 @@ function LaneCalque(props: {zoomLevel: number}) {
     const [lanes, setLanes] = useState<Lane[]>([]);
     
     useEffect(createEffectHandler("lanes/position", (data: any) => {
+        console.log(data);
         setLanes(data);
     }), [createEffectHandler]);
 
