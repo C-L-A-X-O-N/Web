@@ -5,6 +5,7 @@ const WebSocketContext = createContext<{
   send: (type: string, payload: any) => void;
   on: (type: string, callback: (data: any) => void) => () => void;
   off: (type: string, callback: (data: any) => void) => void;
+  createEffectHandler: (type: string, callback: (data: any) => void) => () => void;
 }>({} as any);
 
 
@@ -58,8 +59,17 @@ export const WebSocketProvider = ({ url, children }) => {
   const on = (type: string, callback: Function) => emitterRef.current.on(type, callback);
   const off = (type: string, callback: Function) => emitterRef.current.off(type, callback);
 
+  const createEffectHandler = (type: string, callback: Function) => {
+    const handler = (data: any) => {
+      console.debug(`Effect handler for type=${type} received data:`, data);
+      callback(data);
+    };
+    on(type, handler);
+    return () => off(type, handler);
+  };
+
   return (
-    <WebSocketContext.Provider value={{ send, on, off }}>
+    <WebSocketContext.Provider value={{ send, on, off, createEffectHandler }}>
       {children}
     </WebSocketContext.Provider>
   );

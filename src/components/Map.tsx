@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, Marker} from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -28,11 +28,12 @@ function Map() {
   const [clickedId, setClickedId] = useState<number | null>(null);
   const [zoomLevel, setZoomLevel] = useState(13);
 
-  const { on } = useWebSocket();
+  const { createEffectHandler } = useWebSocket();
 
-  on("vehicle", (data) => {
+  // Register the WebSocket listener only once on mount
+  useEffect(createEffectHandler("vehicle", (data: any) => {
     console.log("Vehicle data received:", data);
-  });
+  }), [createEffectHandler]);
 
   return (
     <MapContainer center={trafficLights[0].position} zoom={13} style={{ height: '100%', width: '100%' }}>
