@@ -50,10 +50,13 @@ function LaneCalque(props: {zoomLevel: number}) {
     const {createEffectHandler} = useWebSocket();
     const [lanes, setLanes] = useState<Lane[]>([]);
     
-    useEffect(createEffectHandler("lanes/position", (data: any) => {
-        console.log(data);
-        setLanes(data);
-    }), [createEffectHandler]);
+    useEffect(() => {
+        const handler = createEffectHandler("lanes/position", (data: any) => {
+            console.log(data);
+            setLanes(data);
+        });
+        return handler;
+    }, [createEffectHandler]);
 
     return (<FeatureGroup>
         {lanes && lanes.map((lane) => {

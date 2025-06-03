@@ -68,10 +68,13 @@ function VehicleCalque() {
         return true;
     }
 
-    useEffect(createEffectHandler("vehicle", (data: any) => {
-        console.time("vehicle_render")
-        setVehicles(data);
-    }), [createEffectHandler]);
+    useEffect(() => {
+        const handler = createEffectHandler("vehicle", (data: any) => {
+            console.time("vehicle_render");
+            setVehicles(data);
+        });
+        return handler;
+    }, [createEffectHandler]);
 
     useEffect(() => {
         if (vehicles.length > 0) {
