@@ -5,23 +5,7 @@ import 'leaflet/dist/leaflet.css';
 import ZoomListener from './ZoomListener';
 import { useWebSocket } from './WebSocketContext';
 import LaneCalque from './LaneCalque';
-
-// Tableau de positions des feux
-const trafficLights: { id: number; position: [number, number]; label: string; }[] = [
-  { id: 1, position: [47.2782063, -1.5214026], label: 'Feu 1' },
-  { id: 2, position: [47.277, -1.523], label: 'Feu 2' },
-  { id: 3, position: [47.279, -1.520], label: 'Feu 3' },
-  { id: 4, position: [47.281, -1.518], label: 'Feu 4' },
-];
-
-
-function getSvgIcon(size = 32): L.Icon {
-  return L.icon({
-    iconUrl: 'traffic_lights.svg',
-    iconSize: [size, size],
-    iconAnchor: [size / 2, size],
-  });
-}
+import TrafficLightsCalque from './TrafficLightsCalque';
 
 function Map() {
   // Pour gérer l'état du marker survolé et cliqué
@@ -34,30 +18,12 @@ function Map() {
   }, [zoomLevel]);
   return (
     <MapContainer center={[47.23400547531244, -1.5705466304812643]} zoom={16} style={{ height: '100%', width: '100%' }}>
-      <ZoomListener onZoomChange={setZoomLevel} />
 
       <TileLayer
         attribution='&copy; OpenStreetMap contributors'
         url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
       />
-      {zoomLevel >= 14 && trafficLights.map(light => {
-        let size = 32;
-        if (clickedId === light.id) size = 48;
-        else if (hoveredId === light.id) size = 40;
-
-        return (
-          <Marker
-            key={light.id}
-            position={light.position}
-            icon={getSvgIcon(size)}
-            eventHandlers={{
-              mouseover: () => setHoveredId(light.id),
-              mouseout: () => setHoveredId(null),
-              click: () => setClickedId(light.id),
-            }}
-          />
-        );
-      })}
+      <TrafficLightsCalque />
       <LaneCalque zoomLevel={zoomLevel}/>
     </MapContainer>
   );
