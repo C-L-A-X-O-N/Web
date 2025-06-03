@@ -55,7 +55,7 @@ function VehicleCalque() {
     }
 
     const isPtrintable = (zoom: number, bound: any, vehicle: Vehicle) => {
-        if (zoom < 17) {
+        if (zoom < 18) {
             return false;
         }
         if (bound) {
