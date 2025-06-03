@@ -5,9 +5,8 @@ import { useEffect, useState } from "react";
 interface Lane {
     id: string;
     shape: [number, number][];
-    importance_score: number;
+    priority: number;
     type: string;
-    edgeType: string;
 }
 
 const color_by_type = {
@@ -24,24 +23,26 @@ const color_by_type = {
 };
 
 function shouldDisplayLane(lane: Lane, zoomLevel: number): boolean {
-    // Define thresholds for importance_score at different zoom levels
     const thresholds: { zoom: number; minImportance: number }[] = [
-        { zoom: 17, minImportance: 0.5 },
-        { zoom: 16, minImportance: 1 },
-        { zoom: 15, minImportance: 2 },
-        { zoom: 14, minImportance: 3 },
-        { zoom: 13, minImportance: 4 },
-        { zoom: 12, minImportance: 5 },
-        { zoom: 11, minImportance: 6 },
-        { zoom: 10, minImportance: 7 }
+        { zoom: 18, minImportance: 0.5 },
+        { zoom: 17, minImportance: 2 },
+        { zoom: 16, minImportance: 3 },
+        { zoom: 15, minImportance: 4 },
+        { zoom: 14, minImportance: 5 },
+        { zoom: 13, minImportance: 6 },
+        { zoom: 12, minImportance: 7 }
     ];
 
     for (const { zoom, minImportance } of thresholds) {
-        if (zoomLevel < zoom && lane.importance_score < minImportance) {
-            return false;
+        if( zoomLevel !== zoom ) {
+            continue;
+        }
+        if (lane.priority >= minImportance) {
+            return true;
         }
     }
-    return true;
+
+    return false;
 }
 
 function LaneCalque(props: {zoomLevel: number}) {
@@ -63,7 +64,7 @@ function LaneCalque(props: {zoomLevel: number}) {
                 positions={lane.shape}
                 color={color_by_type[lane.type] || "#555"}
                 weight={2}
-                opacity={0.5}
+                opacity={1}
                 eventHandlers={{
                     click: () => {
                         console.log(`Clicked lane ${lane.id}`, lane);
