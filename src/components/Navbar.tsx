@@ -24,7 +24,7 @@ function NavigationTabs() {
             component="div"
             sx={{ fontWeight: 400, letterSpacing: '0.2em' }}
           >
-            C-L-A-X-O-N
+            CLAXON
           </Typography>
         </Toolbar>
         <Tabs
