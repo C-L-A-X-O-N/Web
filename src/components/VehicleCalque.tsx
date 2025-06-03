@@ -1,13 +1,15 @@
 import {FeatureGroup, Marker, useMap} from "react-leaflet";
 import { useWebSocket } from "./WebSocketContext";
 import { useEffect, useState } from "react";
-import L, {LatLngBounds} from "leaflet";
+import L, {DivIcon, LatLngBounds} from "leaflet";
 
 interface Vehicle {
     id: string;
     angle: number;
     position: [number, number];
 }
+
+let lastUpdate = Date.now();
 
 function VehicleCalque() {
     const {createEffectHandler} = useWebSocket();
@@ -29,29 +31,36 @@ function VehicleCalque() {
     }, [map]);
 
     const getVehicleIcon = (angle: number, zoom: number) => {
-        let size = 0;
-        if (zoom == 18) {
-            size = 16
-        } else if (zoom == 17) {
-            size = 9;
+        const size = 16
+        // Try to reuse the previous icon if possible
+        const iconKey = `vehicle-icon-${angle}-${size}`;
+        // @ts-ignore
+        if (window._vehicleIcons === undefined) window._vehicleIcons = {};
+        // @ts-ignore
+        if (window._vehicleIcons[iconKey]) {
+            // @ts-ignore
+            return window._vehicleIcons[iconKey];
         }
-        return L.divIcon({
+        const icon = L.divIcon({
             className: 'vehicle-icon-wrapper',
             html: `
-                 <img 
-                   src="/assets/car.svg"
-                   class="vehicle-icon" 
-                   style="
-                     width: ${size}px;
-                     height: ${size}px;
-                     transform: rotate(${angle}deg);
-                     transform-origin: center center;
-                   "
-                 />
+             <img 
+               src="/assets/car.svg"
+               class="vehicle-icon" 
+               style="
+                 width: ${size}px;
+                 height: ${size}px;
+                 transform: rotate(${angle}deg);
+                 transform-origin: center center;
+               "
+             />
                `,
             iconSize: [size, size],
             iconAnchor: [size / 2, size / 2],
         });
+        // @ts-ignore
+        window._vehicleIcons[iconKey] = icon;
+        return icon;
     }
 
     const isPtrintable = (zoom: number, bound: any, vehicle: Vehicle) => {
@@ -71,6 +80,10 @@ function VehicleCalque() {
     useEffect(() => {
         const handler = createEffectHandler("vehicle", (data: any) => {
             console.time("vehicle_render");
+            const now = Date.now();
+            const elapsed = now - lastUpdate;
+            document.documentElement.style.setProperty('--vehicule-transition-duration', `${elapsed}ms`);
+            lastUpdate = now;
             setVehicles(data);
         });
         return handler;
