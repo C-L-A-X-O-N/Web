@@ -12,7 +12,6 @@ function LaneCalque() {
     const [lanes, setLanes] = useState<Lane[]>([]);
     
     useEffect(createEffectHandler("lanes/position", (data: any) => {
-        console.debug("Lane data received:", data);
         setLanes(data);
     }), [createEffectHandler]);
 
