@@ -3,6 +3,7 @@ import { MapContainer, TileLayer, Marker, useMapEvent } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import ZoomListener from './ZoomListener';
+import { useWebSocket } from './WebSocketContext';
 
 // Tableau de positions des feux
 const trafficLights = [
@@ -25,6 +26,12 @@ function Map() {
   const [hoveredId, setHoveredId] = useState<number | null>(null);
   const [clickedId, setClickedId] = useState<number | null>(null);
   const [zoomLevel, setZoomLevel] = useState(13);
+
+  const { on } = useWebSocket();
+
+  on("vehicle", (data) => {
+    console.log("Vehicle data received:", data);
+  });
 
   return (
     <MapContainer center={trafficLights[0].position} zoom={13} style={{ height: '100%', width: '100%' }}>
