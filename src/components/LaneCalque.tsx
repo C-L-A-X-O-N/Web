@@ -9,7 +9,7 @@ interface Lane {
     type: string;
 }
 
-const color_by_type = {
+const color_by_type : Record<string, string> = {
     "pedestrian": "#a0a0a0",
     "bike": "#00ff00",
     "public_transport": "#ff9900",

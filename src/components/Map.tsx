@@ -1,15 +1,11 @@
 import { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, LayersControl, ScaleControl, ZoomControl} from 'react-leaflet';
-import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import ZoomListener from './ZoomListener';
 import LaneCalque from './LaneCalque';
 import TrafficLightsCalque from './TrafficLightsCalque';
 import VehicleCalque from './VehicleCalque';
 function Map() {
-  // Pour gérer l'état du marker survolé et cliqué
-  const [hoveredId, setHoveredId] = useState<number | null>(null);
-  const [clickedId, setClickedId] = useState<number | null>(null);
+
   const [zoomLevel, setZoomLevel] = useState(16);
 
   useEffect(() => {

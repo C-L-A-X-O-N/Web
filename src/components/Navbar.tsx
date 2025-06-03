@@ -4,7 +4,7 @@ import { Tabs, Tab, Box, Typography, Toolbar, AppBar } from '@mui/material';
 function NavigationTabs() {
   const [value, setValue] = useState(0);
 
-  const handleChange = (event, newValue) => {
+  const handleChange = ( _:any, newValue:number) => {
     setValue(newValue);
   };
 
