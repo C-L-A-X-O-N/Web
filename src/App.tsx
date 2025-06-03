@@ -1,11 +1,7 @@
-import { CssBaseline, Box, IconButton } from '@mui/material';
+import { CssBaseline, Box } from '@mui/material';
 import Navbar from './components/Navbar';
 import Sidebar from './components/Sidebar';
 import Map from './components/Map';
-import Footer from './components/Footbar';
-import { Settings } from '@mui/icons-material';
-
-const appBarHeight = 96; // AppBar (64) + Tabs (32)
 
 export default function App() {
   return (
