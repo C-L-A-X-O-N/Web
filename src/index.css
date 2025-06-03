@@ -66,3 +66,17 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+:root {
+  --vehicule-transition-duration: 1.3s;
+}
+
+
+.leaflet-marker-icon {
+  -webkit-transition: transform var(--vehicule-transition-duration) linear;
+  -moz-transition: transform var(--vehicule-transition-duration) linear;
+  -o-transition: transform var(--vehicule-transition-duration) linear;
+  -ms-transition: transform var(--vehicule-transition-duration) linear;
+  transition: transform var(--vehicule-transition-duration) linear;
+  will-change: transform;
+}
