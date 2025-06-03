@@ -27,8 +27,11 @@ function Map() {
   // Pour gérer l'état du marker survolé et cliqué
   const [hoveredId, setHoveredId] = useState<number | null>(null);
   const [clickedId, setClickedId] = useState<number | null>(null);
-  const [zoomLevel, setZoomLevel] = useState(13);
+  const [zoomLevel, setZoomLevel] = useState(16);
 
+  useEffect(() => {
+    console.log(`Zoom level changed to: ${zoomLevel}`);
+  }, [zoomLevel]);
   return (
     <MapContainer center={[47.23400547531244, -1.5705466304812643]} zoom={16} style={{ height: '100%', width: '100%' }}>
       <ZoomListener onZoomChange={setZoomLevel} />
@@ -55,7 +58,7 @@ function Map() {
           />
         );
       })}
-      <LaneCalque/>
+      <LaneCalque zoomLevel={zoomLevel}/>
     </MapContainer>
   );
 }
