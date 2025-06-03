@@ -4,6 +4,7 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import ZoomListener from './ZoomListener';
 import { useWebSocket } from './WebSocketContext';
+import LaneCalque from './LaneCalque';
 
 // Tableau de positions des feux
 const trafficLights: { id: number; position: [number, number]; label: string; }[] = [
@@ -28,15 +29,8 @@ function Map() {
   const [clickedId, setClickedId] = useState<number | null>(null);
   const [zoomLevel, setZoomLevel] = useState(13);
 
-  const { createEffectHandler } = useWebSocket();
-
-  // Register the WebSocket listener only once on mount
-  useEffect(createEffectHandler("vehicle", (data: any) => {
-    console.log("Vehicle data received:", data);
-  }), [createEffectHandler]);
-
   return (
-    <MapContainer center={trafficLights[0].position} zoom={13} style={{ height: '100%', width: '100%' }}>
+    <MapContainer center={[47.23400547531244, -1.5705466304812643]} zoom={16} style={{ height: '100%', width: '100%' }}>
       <ZoomListener onZoomChange={setZoomLevel} />
 
       <TileLayer
@@ -61,6 +55,7 @@ function Map() {
           />
         );
       })}
+      <LaneCalque/>
     </MapContainer>
   );
 }
