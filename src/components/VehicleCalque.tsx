@@ -31,7 +31,14 @@ function VehicleCalque() {
     }, [map]);
 
     const getVehicleIcon = (angle: number, zoom: number) => {
-        const size = 16
+        let size = 0;
+        if (zoom == 18) {
+            size = 6
+        } else if (zoom == 17) {
+            size = 4;
+        } else if (zoom == 16) {
+            size = 2;
+        }
         // Try to reuse the previous icon if possible
         const iconKey = `vehicle-icon-${angle}-${size}`;
         // @ts-ignore
@@ -44,19 +51,22 @@ function VehicleCalque() {
         const icon = L.divIcon({
             className: 'vehicle-icon-wrapper',
             html: `
-             <img 
-               src="/assets/car.svg"
-               class="vehicle-icon" 
-               style="
-                 width: ${size}px;
-                 height: ${size}px;
-                 transform: rotate(${angle}deg);
-                 transform-origin: center center;
-               "
-             />
-               `,
+            <div style="
+                width: ${size}px;
+                height: ${size}px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transform: rotate(${angle}deg);
+                transform-origin: center center;
+            ">
+                <img 
+                    src="/assets/car.svg" 
+                    style="width: 100%; height: auto; display: block;" 
+                />
+            </div>`,
             iconSize: [size, size],
-            iconAnchor: [size / 2, size / 2],
+            iconAnchor: [size/2, size/2],
         });
         // @ts-ignore
         window._vehicleIcons[iconKey] = icon;
@@ -64,7 +74,7 @@ function VehicleCalque() {
     }
 
     const isPtrintable = (zoom: number, bound: any, vehicle: Vehicle) => {
-        if (zoom < 18) {
+        if (zoom < 16) {
             return false;
         }
         if (bound) {
