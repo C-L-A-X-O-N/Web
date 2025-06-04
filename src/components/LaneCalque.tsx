@@ -7,6 +7,8 @@ interface Lane {
     shape: [number, number][];
     priority: number;
     type: string;
+    jam: number;
+    color: string;
 }
 
 const color_by_type : Record<string, string> = {
@@ -52,30 +54,85 @@ function LaneCalque(props: {zoomLevel: number}) {
     
     useEffect(() => {
         const handler = createEffectHandler("lanes/position", (data: any) => {
-            console.log(data);
-            setLanes(data);
+            const lanesWithJam = Array.isArray(data)
+                ? data.map((lane: Lane) => ({ ...lane, jam: lane.jam ?? 0, color: "#555" }))
+                : [];
+            setLanes(lanesWithJam);
         });
         return handler;
     }, [createEffectHandler]);
+
+    useEffect(() => {
+        const handler = createEffectHandler("lane/state", (data: {id: string, traffic_jam: number}[]) => {
+            setLanes((prevLanes) => {
+                return prevLanes.map((lane) => {
+                    const updatedLane = data.find((d) => d.id === lane.id);
+                    if (updatedLane) {
+                        const jam = Math.max(0, Math.min(1, updatedLane.traffic_jam ?? 0));
+                        // 0.0: vert (#00ff00)
+                        // 0.25: jaune (#ffff00)
+                        // 0.5: orange (#ff9900)
+                        // 0.75: rouge foncé (#cc0000)
+                        // 1.0: rouge clair (#ff3333)
+                        let jamColor = "#00ff00";
+                        if (jam < 0.25) {
+                            // Vert -> Jaune
+                            const t = jam / 0.25;
+                            const r = Math.round(0 + t * (255 - 0));
+                            const g = 255;
+                            const b = 0;
+                            jamColor = `#${r.toString(16).padStart(2, "0")}${g.toString(16)}${b.toString(16).padStart(2, "0")}`;
+                        } else if (jam < 0.5) {
+                            // Jaune -> Orange
+                            const t = (jam - 0.25) / 0.25;
+                            const r = 255;
+                            const g = Math.round(255 - t * (255 - 153));
+                            const b = 0;
+                            jamColor = `#${r.toString(16)}${g.toString(16).padStart(2, "0")}${b.toString(16).padStart(2, "0")}`;
+                        } else if (jam < 0.75) {
+                            // Orange -> Rouge foncé
+                            const t = (jam - 0.5) / 0.25;
+                            const r = Math.round(255 - t * (255 - 204));
+                            const g = Math.round(153 - t * (153 - 0));
+                            const b = 0;
+                            jamColor = `#${r.toString(16).padStart(2, "0")}${g.toString(16).padStart(2, "0")}${b.toString(16).padStart(2, "0")}`;
+                        } else {
+                            // Rouge foncé -> Rouge clair
+                            const t = (jam - 0.75) / 0.25;
+                            const r = Math.round(204 + t * (255 - 204));
+                            const g = 0;
+                            const b = Math.round(0 + t * (51 - 0));
+                            jamColor = `#${r.toString(16).padStart(2, "0")}${g.toString(16).padStart(2, "0")}${b.toString(16).padStart(2, "0")}`;
+                        }
+                        return { ...lane, jam: updatedLane.traffic_jam, color: jamColor };
+                    }
+                    return lane;
+                });
+            });
+        });
+        return handler;
+    }, [createEffectHandler])
 
     return (<FeatureGroup>
         {lanes && lanes.map((lane) => {
             if(!shouldDisplayLane(lane, zoomLevel)) {
                 return null; 
             }
-            return (<Polyline
-                key={lane.id}
-                positions={lane.shape}
-                color={color_by_type[lane.type] || "#555"}
-                weight={2}
-                opacity={1}
-                eventHandlers={{
-                    click: () => {
-                        console.log(`Clicked lane ${lane.id}`, lane);
-                    }
-                }}
-            />
-        )})}
+            const weight = 2 + 4 * Math.max(0, Math.min(1, lane.jam ?? 0));
+            return (
+                <Polyline
+                    key={lane.id + lane.color}
+                    positions={lane.shape}
+                    color={lane.color}
+                    weight={weight}
+                    opacity={1}
+                    eventHandlers={{
+                        click: () => {
+                            console.log(`Clicked lane ${lane.id}`, lane);
+                        }
+                    }}
+                />
+            );})}
     </FeatureGroup>);
 }
 

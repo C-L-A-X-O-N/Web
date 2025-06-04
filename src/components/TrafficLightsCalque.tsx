@@ -34,18 +34,17 @@ function TrafficLightsCalque() {
   const { createEffectHandler } = useWebSocket();
   const [lights, setLights] = useState<TrafficLightPosition[]>([]);
 
-    useEffect(
-    createEffectHandler("traffic_light/state", (data: TrafficLightState[]) => {
-
-      setLights(prevLights =>
-        prevLights.map(light => {
-          const match = data.find(d => d.id === light.id);
-          return match ? { ...light, state: match.state } : light;
-        })
-      );
-    }),
-    [createEffectHandler]
-  );
+    useEffect(() => {
+      const handler = createEffectHandler("traffic_light/state", (data: TrafficLightState[]) => {
+        setLights(prevLights =>
+          prevLights.map(light => {
+            const match = data.find(d => d.id === light.id);
+            return match ? { ...light, state: match.state } : light;
+          })
+        );
+      });
+      return handler;
+    }, [createEffectHandler]);
 
   useEffect(createEffectHandler("traffic_light/position", (data: TrafficLightPosition[]) => {
     const uniqueLightsMap = new Map<string, TrafficLightPosition>();
