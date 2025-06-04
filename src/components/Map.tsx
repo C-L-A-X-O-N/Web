@@ -19,7 +19,6 @@ function Map() {
         attribution='&copy; OpenStreetMap contributors'
         url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
       />
-      <TrafficLightsCalque />
 
       <ZoomControl position="bottomleft" />
       <ScaleControl position="bottomleft" />
@@ -30,6 +29,9 @@ function Map() {
         </LayersControl.Overlay>
         <LayersControl.Overlay name="Véhicules" checked>
           <VehicleCalque/>
+        </LayersControl.Overlay>
+        <LayersControl.Overlay name="Feux de circulations" checked>
+          <TrafficLightsCalque/>
         </LayersControl.Overlay>
       </LayersControl>
     </MapContainer>
