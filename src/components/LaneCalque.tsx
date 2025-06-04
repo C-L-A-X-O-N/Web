@@ -51,6 +51,7 @@ function LaneCalque() {
     const [zoomLevel, setZoom] = useState<number>(-1);
     const {createEffectHandler} = useWebSocket();
     const [lanes, setLanes] = useState<Lane[]>([]);
+    const [laneHovered, setLaneHovered] = useState<string | null>(null);
     const map = useMap();
 
     useEffect(() => {
@@ -136,20 +137,56 @@ function LaneCalque() {
             }
             const weight = 2 + 4 * Math.max(0, Math.min(1, lane.jam ?? 0));
             return (
-                <Polyline
-                    key={lane.id + lane.color}
-                    positions={lane.shape}
-                    color={lane.color}
-                    weight={weight}
-                    opacity={1}
-                    eventHandlers={{
-                        click: () => {
-                            console.log(`Clicked lane ${lane.id}`, lane);
-                        }
-                    }}
-                />
+                <>
+                    <Polyline
+                        key={lane.id + lane.color}
+                        positions={lane.shape}
+                        color={lane.color}
+                        weight={weight}
+                        opacity={1}
+                        eventHandlers={{
+                            click: () => {
+                                console.log(`Clicked lane ${lane.id}`, lane);
+                            },
+                            mouseover: () => setLaneHovered(lane.id),
+                            mouseout: () => setLaneHovered(null)
+                        }}
+                    />
+                    {lane.shape.length > 0 && lane.id == laneHovered && zoomLevel == 18 && (
+                        <div>
+                            <div
+                                style={{
+                                    position: "absolute",
+                                    left: 0,
+                                    top: 0,
+                                    pointerEvents: "none"
+                                }}
+                            >
+                                {/* Utilisation de Marker pour afficher le texte sur la carte */}
+                                <MarkerWithText
+                                    position={lane.shape[0]}
+                                    text={lane.id}
+                                />
+                            </div>
+                        </div>
+                    )}
+                </>
             );})}
     </FeatureGroup>);
+}
+
+import { Marker } from "react-leaflet";
+import L from "leaflet";
+
+// Simple MarkerWithText component definition
+function MarkerWithText({ position, text }: { position: [number, number], text: string }) {
+    // Create a simple divIcon with the text
+    const icon = L.divIcon({
+        className: "custom-marker-text",
+        html: `${text}`,
+        iconAnchor: [0, 0]
+    });
+    return <Marker position={position} icon={icon} interactive={false} />;
 }
 
 export default LaneCalque;

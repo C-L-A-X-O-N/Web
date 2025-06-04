@@ -35,14 +35,7 @@ function VehicleCalque() {
     }, [map]);
 
     const getVehicleIcon = (angle: number, zoom: number) => {
-        let size = 0;
-        if (zoom == 18) {
-            size = 6
-        } else if (zoom == 17) {
-            size = 4;
-        } else if (zoom == 16) {
-            size = 2;
-        }
+        const size = 2 + (zoom - 16) * 2;
         // Try to reuse the previous icon if possible
         const iconKey = `vehicle-icon-${angle}-${size}`;
         // @ts-ignore

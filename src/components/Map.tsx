@@ -13,11 +13,12 @@ function Map() {
   }, [zoomLevel]);
 
   return (
-    <MapContainer center={[47.23400547531244, -1.5705466304812643]} zoom={16} style={{ height: '100%', width: '100%' }}>
+    <MapContainer center={[47.22924679606443, -1.5695475486831956]} zoom={20} style={{ height: '100%', width: '100%' }}>
 
       <TileLayer
         attribution='&copy; OpenStreetMap contributors'
         url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
+        maxZoom={30}
       />
 
       <ZoomControl position="bottomleft" />
