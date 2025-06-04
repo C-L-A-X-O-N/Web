@@ -1,4 +1,4 @@
-import { FeatureGroup, Polyline } from "react-leaflet";
+import { FeatureGroup, Polyline, useMap } from "react-leaflet";
 import { useWebSocket } from "./WebSocketContext";
 import { useEffect, useState } from "react";
 
@@ -47,10 +47,26 @@ function shouldDisplayLane(lane: Lane, zoomLevel: number): boolean {
     return false;
 }
 
-function LaneCalque(props: {zoomLevel: number}) {
-    const { zoomLevel } = props;
+function LaneCalque() {
+    const [zoomLevel, setZoom] = useState<number>(-1);
     const {createEffectHandler} = useWebSocket();
     const [lanes, setLanes] = useState<Lane[]>([]);
+    const map = useMap();
+
+    useEffect(() => {
+        map.whenReady(() => {
+            const updateZoomAndBound = () => {
+                setZoom(map.getZoom());
+            }
+
+            map.on("moveend zoomend", updateZoomAndBound);
+            updateZoomAndBound();
+        });
+
+        return () => {
+            map.off("moveend zoomend");
+        };
+    }, [map]);
     
     useEffect(() => {
         const handler = createEffectHandler("lanes/position", (data: any) => {

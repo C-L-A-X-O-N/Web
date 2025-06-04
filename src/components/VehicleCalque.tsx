@@ -28,6 +28,10 @@ function VehicleCalque() {
             map.on("moveend zoomend", updateZoomAndBound);
             updateZoomAndBound();
         });
+
+        return () => {
+            map.off("moveend zoomend");
+        };
     }, [map]);
 
     const getVehicleIcon = (angle: number, zoom: number) => {
