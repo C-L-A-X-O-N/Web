@@ -13,7 +13,7 @@ function Map() {
   }, [zoomLevel]);
 
   return (
-    <MapContainer center={[47.22924679606443, -1.5695475486831956]} zoom={20} style={{ height: '100%', width: '100%' }}>
+    <MapContainer center={[47.23262717554573, -1.576783785586457]} zoom={19} style={{ height: '100%', width: '100%' }}>
 
       <TileLayer
         attribution='&copy; OpenStreetMap contributors'

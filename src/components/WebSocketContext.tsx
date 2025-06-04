@@ -35,7 +35,6 @@ export const WebSocketProvider = ({ url, children }) => {
     socketRef.current.onmessage = (event) => {
       const message = JSON.parse(event.data);
       const { type, data } = message;
-      console.debug(`WebSocket message received: type=${type}, data=`, data);
       emitterRef.current.emit(type, data);
     };
 
@@ -61,7 +60,6 @@ export const WebSocketProvider = ({ url, children }) => {
 
   const createEffectHandler = (type: string, callback: Function) => {
     const handler = (data: any) => {
-      console.debug(`Effect handler for type=${type} received data:`, data);
       callback(data);
     };
     on(type, handler);

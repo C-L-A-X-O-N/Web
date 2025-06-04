@@ -35,6 +35,13 @@ function shouldDisplayLane(lane: Lane, zoomLevel: number): boolean {
         { zoom: 12, minImportance: 7 }
     ];
 
+    if(zoomLevel < 12) {
+        return lane.priority >= 7; 
+    }
+    if(zoomLevel > 18) {
+        return true; 
+    }
+
     for (const { zoom, minImportance } of thresholds) {
         if( zoomLevel !== zoom ) {
             continue;
