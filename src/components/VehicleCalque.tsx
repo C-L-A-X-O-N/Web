@@ -1,39 +1,15 @@
-import {FeatureGroup, Marker, useMap} from "react-leaflet";
-import { useWebSocket } from "./WebSocketContext";
-import { useEffect, useState } from "react";
-import L, {LatLngBounds} from "leaflet";
-
-interface Vehicle {
-    id: string;
-    angle: number;
-    position: [number, number];
-    type: string;
-}
+import {FeatureGroup, Marker} from "react-leaflet";
+import L from "leaflet";
+import { useVehicles, type Vehicle } from "../provider/VehicleProvider";
+import { useZoomLevel } from "../provider/ZoomProvider";
+import { useEffect } from "react";
 
 let lastUpdate = Date.now();
 
 function VehicleCalque() {
-    const {createEffectHandler} = useWebSocket();
-    const [vehicles, setVehicles] = useState<Vehicle[]>([]);
-    const [zoom, setZoom] = useState<number>(-1);
-    const [bound, setBound] = useState<LatLngBounds>();
-    const map = useMap();
+    const { vehicles } = useVehicles();
+    const { zoom, bound } = useZoomLevel();
 
-    useEffect(() => {
-        map.whenReady(() => {
-            const updateZoomAndBound = () => {
-                setZoom(map.getZoom());
-                setBound(map.getBounds());
-            }
-
-            map.on("moveend zoomend", updateZoomAndBound);
-            updateZoomAndBound();
-        });
-
-        return () => {
-            map.off("moveend zoomend");
-        };
-    }, [map]);
 
     const getVehicleIcon = (vehicle: Vehicle, zoom: number) => {
         const angle = vehicle.angle || 0; 
@@ -154,21 +130,10 @@ function VehicleCalque() {
     }
 
     useEffect(() => {
-        const handler = createEffectHandler("vehicle", (data: any) => {
-            console.time("vehicle_render");
-            const now = Date.now();
-            const elapsed = now - lastUpdate;
-            document.documentElement.style.setProperty('--vehicule-transition-duration', `${elapsed}ms`);
-            lastUpdate = now;
-            setVehicles(data);
-        });
-        return handler;
-    }, [createEffectHandler]);
-
-    useEffect(() => {
-        if (vehicles.length > 0) {
-            console.timeEnd("vehicle_render");
-        }
+        const now = Date.now();
+        const elapsed = now - lastUpdate;
+        document.documentElement.style.setProperty('--vehicule-transition-duration', `${elapsed}ms`);
+        lastUpdate = now;
     }, [vehicles]);
 
     return (<FeatureGroup>
