@@ -23,7 +23,7 @@ export const VehicleProvider = ({children}: { children: ReactNode }) => {
     useEffect(() => {
         const unsub1 = createEffectHandler("vehicle", (data: Vehicle[]) => {
             if(!isFocused){
-                console.warn("Vehicle update ignored due to focus state");
+                console.info("Vehicle update ignored due to focus state");
                 return;
             }
             setVehicles(data);
@@ -31,7 +31,7 @@ export const VehicleProvider = ({children}: { children: ReactNode }) => {
         return () => {
             unsub1 && unsub1();
         };
-    }, [createEffectHandler]);
+    }, [createEffectHandler, isFocused]);
 
     return (
         <VehicleContext.Provider value={{ vehicles }}>

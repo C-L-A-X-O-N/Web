@@ -47,7 +47,7 @@ export const LaneProvider = ({children}: { children: ReactNode }) => {
             unsub1 && unsub1();
             unsub2 && unsub2();
         };
-    }, [createEffectHandler]);
+    }, [createEffectHandler, isFocused]);
 
     return (
         <LaneContext.Provider value={{ lanes }}>
