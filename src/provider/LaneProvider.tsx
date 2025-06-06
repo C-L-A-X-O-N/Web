@@ -11,37 +11,39 @@ export interface Lane {
 }
 
 const LaneContext = createContext<{
-    lanes: Lane[]
-}>({ lanes: [] })
+    lanes: Map<string, Lane>;
+}>({ lanes: new Map<string, Lane>() });
 
 export const LaneProvider = ({children}: { children: ReactNode }) => {
-    const [lanes, setLanes] = useState<Lane[]>([]);
+    const [lanes, setLanes] = useState<Map<string, Lane>>(new Map<string, Lane>());
     const { createEffectHandler } = useWebSocket();
     const { isFocused } = useFocus();
 
 
     useEffect(() => {
         const unsub1 = createEffectHandler("lanes/position", (data: any) => {
-            const lanesWithJam = Array.isArray(data)
-                ? data.map((lane: Lane) => ({ ...lane, jam: lane.jam ?? 0, color: "#555" }))
-                : [];
-            console.info("Received " + lanesWithJam.length + " lanes from server");
-            setLanes(lanesWithJam);
+            const map = new Map<string, Lane>();
+            data.map((lane: Lane) => {
+                map.set(lane.id, { ...lane, jam: lane.jam ?? 0 });
+            })
+            setLanes(map);
         });
         const unsub2 = createEffectHandler("lane/state", (data: { id: string; traffic_jam: number }[]) => {
             if (!isFocused) {
                 console.info("Received lane state update, but user is not focused");
                 return;
             }
-            setLanes((prevLanes) =>
-                prevLanes.map((lane) => {
-                    const updated = data.find((d) => d.id === lane.id);
-                    if (updated) {
-                        return { ...lane, jam: updated.traffic_jam };
+            setLanes((prevLanes) => {
+                const map = new Map<string, Lane>(prevLanes);
+                data.forEach((d) => {
+                    const lane = prevLanes.get(d.id);
+                    if (lane) {
+                        map.set(d.id, { ...lane, jam: d.traffic_jam });
                     }
-                    return lane;
                 })
-            );
+
+                return map;
+            });
         });
         return () => {
             unsub1 && unsub1();

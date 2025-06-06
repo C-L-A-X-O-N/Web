@@ -78,7 +78,7 @@ function LaneCalque() {
     const {lanes} = useLanes();
     
     return (<FeatureGroup>
-        {lanes && lanes.map((lane) => {
+        {lanes && Array.from(lanes.values()).map((lane) => {
             if(!shouldDisplayLane(lane, zoom)) {
                 return null; 
             }
