@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useRef } from 'react';
 import { EventEmitter } from '../eventEmitter';
+import { useFocus } from './FocusProvider';
 
 const WebSocketContext = createContext<{
   send: (type: string, payload: any) => void;
@@ -12,6 +13,7 @@ const WebSocketContext = createContext<{
 export const WebSocketProvider = ({ url, children }) => {
   const socketRef = useRef<WebSocket>({} as WebSocket);
   const emitterRef = useRef<EventEmitter>(new EventEmitter());
+  const {isFocused} = useFocus();
 
   function connect() {
     console.log(`Connecting to WebSocket at ${url}`);
@@ -38,6 +40,11 @@ export const WebSocketProvider = ({ url, children }) => {
       emitterRef.current.emit(type, data);
     };
 
+    socketRef.current.onopen = () => {
+      console.log('WebSocket connection established');
+      emitterRef.current.emit('connected', {});
+    };
+
     socketRef.current.onclose = () => {
       console.log('WebSocket connection closed, attempting to reconnect...');
       setTimeout(connect, 1000);
@@ -58,6 +65,10 @@ export const WebSocketProvider = ({ url, children }) => {
     }
     socketRef.current?.send(message);
   };
+
+  useEffect(() => {
+    send("session/focus", { focused: isFocused });
+  }, [isFocused]);
 
   const on = (type: string, callback: Function) => emitterRef.current.on(type, callback);
   const off = (type: string, callback: Function) => emitterRef.current.off(type, callback);

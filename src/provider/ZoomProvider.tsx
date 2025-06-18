@@ -2,6 +2,7 @@ import type { LatLngBounds } from "leaflet";
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import { useMap } from "react-leaflet";
 import { useWebSocket } from "./WebSocketContext";
+import { Update } from "@mui/icons-material";
 
 const ZoomContext = createContext<{ zoom: number, bound?: LatLngBounds }>({ zoom: -1, bound: undefined });
 
@@ -9,20 +10,26 @@ export const ZoomProvider = ({ children }: { children: ReactNode }) => {
     const [zoom, setZoomLevel] = useState(-1);
     const [bound, setBound] = useState<LatLngBounds>();
     const map = useMap();
-    const {send} = useWebSocket();
+    const {send, createEffectHandler} = useWebSocket();
+
+    const updateZoom = () => {
+        console.log("UPDATING ZOOM");
+        setBound(map.getBounds());
+        setZoomLevel(map.getZoom())
+    };
 
     useEffect(() => {
-        const updateZoom = () => {
-            console.log("UPDATING ZOOM");
-            setBound(map.getBounds());
-            setZoomLevel(map.getZoom())
-        };
         map.on("moveend zoomend", updateZoom);
         updateZoom();
         return () => {
             map.off("moveend zoomend");
         };
     }, [map]);
+
+    useEffect(createEffectHandler(
+        "connected",
+        updateZoom
+    ), [createEffectHandler]);
 
     useEffect(() => {
         const northWest = bound?.getNorthWest();
