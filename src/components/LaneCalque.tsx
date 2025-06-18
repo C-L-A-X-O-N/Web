@@ -88,7 +88,9 @@ function LaneCalque() {
                 <>
                     <Polyline
                         key={lane.id + color}
-                        positions={lane.shape}
+                        positions={[
+                            ...lane.shape.map((point) => [point[1], point[0]] as [number, number]),
+                        ]}
                         color={color}
                         weight={weight}
                         opacity={1}

@@ -12,14 +12,13 @@ export const ZoomProvider = ({ children }: { children: ReactNode }) => {
     const {send} = useWebSocket();
 
     useEffect(() => {
-        map.whenReady(() => {
-            const updateZoom = () => {
-                setBound(map.getBounds());
-                setZoomLevel(map.getZoom())
-            };
-            map.on("moveend zoomend", updateZoom);
-            updateZoom();
-        });
+        const updateZoom = () => {
+            console.log("UPDATING ZOOM");
+            setBound(map.getBounds());
+            setZoomLevel(map.getZoom())
+        };
+        map.on("moveend zoomend", updateZoom);
+        updateZoom();
         return () => {
             map.off("moveend zoomend");
         };
