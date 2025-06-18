@@ -50,8 +50,12 @@ export const WebSocketProvider = ({ url, children }) => {
 
   useEffect(connect, [url]);
 
-  const send = (type: string, payload: any) => {
-    const message = JSON.stringify({ type, payload });
+  const send = (type: string, data: any) => {
+    const message = JSON.stringify({ type, data });
+    if (socketRef.current.readyState !== WebSocket.OPEN) {
+      console.error('WebSocket is not open. Cannot send message:', message);
+      return;
+    }
     socketRef.current?.send(message);
   };
 

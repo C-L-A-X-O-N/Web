@@ -120,8 +120,12 @@ function VehicleCalque() {
             return false;
         }
         if (bound) {
-            const latLng = L.latLng(vehicle.position);
+            const latLng = L.latLng({
+                lat: vehicle.position[1],
+                lng: vehicle.position[0]
+            });
             if (bound.contains(latLng) === false) {
+                console.warn("Vehicle position is outside of the current map bounds:", vehicle.id, vehicle.position, "Zoom level:", zoom);
                 return false;
             }
             //return bound.contains(latLng);
@@ -140,7 +144,10 @@ function VehicleCalque() {
         {vehicles && vehicles.map((vehicle) => (
             (isPtrintable(zoom, bound, vehicle) && <Marker
                 key={vehicle.id}
-                position={vehicle.position}
+                position={{
+                    lat: vehicle.position[1],
+                    lng: vehicle.position[0]
+                }}
                 icon={getVehicleIcon(vehicle, zoom)}
                 eventHandlers={{
                     click: () => {
