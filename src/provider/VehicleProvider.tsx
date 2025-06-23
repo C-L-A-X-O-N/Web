@@ -15,6 +15,7 @@ const VehicleContext = createContext<{
 
 
 export const VehicleProvider = ({children}: { children: ReactNode }) => {
+    const [vehiclesMap, setVehiclesMap] = useState<Map<string, Vehicle>>(new Map());
     const [vehicles, setVehicles] = useState<Vehicle[]>([]);
     const { createEffectHandler } = useWebSocket();
     const { isFocused } = useFocus();
@@ -26,7 +27,12 @@ export const VehicleProvider = ({children}: { children: ReactNode }) => {
                 console.info("Vehicle update ignored due to focus state");
                 return;
             }
-            setVehicles(data);
+            const newVehicules = vehiclesMap
+            data.forEach((veh) => {
+                newVehicules.set(veh.id, veh)
+            })
+            setVehiclesMap(newVehicules)
+            setVehicles(Array.from(newVehicules.values()));
         });
         return () => {
             unsub1 && unsub1();

@@ -11,7 +11,7 @@ import { VehicleProvider } from './provider/VehicleProvider.tsx'
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <FocusProvider>
-      <WebSocketProvider url="ws://localhost:7890">
+      <WebSocketProvider url="ws://localhost:7900">
         <LaneProvider>
           <TrafficLightsProvider>
             <VehicleProvider>
