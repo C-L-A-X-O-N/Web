@@ -71,23 +71,22 @@ export const WebSocketProvider = ({ url, children }) => {
   }, [isFocused]);
 
   useEffect(() => {
-    const interv = setInterval(() => {
-      if (!isFocused) return; 
-      send("session/update_vehicles", "")
-    }, 1000)
     const interv2 = setInterval(() => {
       if (!isFocused) return; 
       send("session/update_lights", "")
     }, 900)
-
+    
     return () => {
-      clearInterval(interv);
       clearInterval(interv2);
     };
-  }, [isFocused])
+  }, [isFocused, socketRef])
 
   const on = (type: string, callback: Function) => emitterRef.current.on(type, callback);
   const off = (type: string, callback: Function) => emitterRef.current.off(type, callback);
+
+  on('connected', () => {
+    send("session/focus", { focused: true });
+  });
 
   const createEffectHandler = (type: string, callback: Function) => {
     const handler = (data: any) => {

@@ -62,7 +62,7 @@ function TrafficLightsCalque() {
             ret.set(posId,
               <Marker
                 key={position.id + position.stop_lat + position.stop_lon}
-                position={[position.stop_lat, position.stop_lon]}
+                position={[position.stop_lat ?? 0, position.stop_lon ?? 0]}
                 icon={getTrafficLightIcon(position.state ?? 0, zoom)}
                 eventHandlers={{
                   click: () => {
@@ -73,7 +73,7 @@ function TrafficLightsCalque() {
             );
           });
         });
-        return ret.values()
+        return Array.from(ret.values());
       })()}
     </FeatureGroup>
   );
