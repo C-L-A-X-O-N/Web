@@ -16,6 +16,8 @@ const drawerWidth = 240;
 
 export default function Sidebar() {
   const { accidents } = useAccidents();
+  
+  console.log("Sidebar: Nombre d'accidents reçus:", accidents.length, accidents);
 
   const formatCoordinates = (position: [number, number]) => {
     return `${position[0].toFixed(3)}, ${position[1].toFixed(3)}`;
@@ -52,7 +54,7 @@ export default function Sidebar() {
                   }
                   secondary={
                     <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.7rem', lineHeight: 1.2 }}>
-                      {formatCoordinates(accident.position)} • Z{accident.zone} • T{accident.start_time}
+                      {formatCoordinates(accident.position)} • T{accident.start_time}
                     </Typography>
                   }
                   sx={{ 

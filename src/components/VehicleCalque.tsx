@@ -164,7 +164,7 @@ function VehicleCalque() {
     }
 
     useEffect(() => {
-        console.log("VehicleCalque: vehicles updated", vehicles);
+        //console.log("VehicleCalque: vehicles updated", vehicles);
         const now = Date.now();
         const elapsed = now - lastUpdate;
         document.documentElement.style.setProperty('--vehicule-transition-duration', `${elapsed}ms`);

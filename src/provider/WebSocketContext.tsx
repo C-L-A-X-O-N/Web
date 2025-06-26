@@ -9,7 +9,6 @@ const WebSocketContext = createContext<{
   createEffectHandler: (type: string, callback: (data: any) => void) => () => void;
 }>({} as any);
 
-
 export const WebSocketProvider = ({ url, children }) => {
   const socketRef = useRef<WebSocket>({} as WebSocket);
   const emitterRef = useRef<EventEmitter>(new EventEmitter());
