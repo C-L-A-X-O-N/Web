@@ -7,6 +7,7 @@ import { LaneProvider } from './provider/LaneProvider.tsx'
 import { TrafficLightsProvider } from './provider/TrafficLightsProvider.tsx'
 import { FocusProvider } from './provider/FocusProvider.tsx'
 import { VehicleProvider } from './provider/VehicleProvider.tsx'
+import { AccidentProvider } from './provider/AccidentProvider.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -15,7 +16,9 @@ createRoot(document.getElementById('root')!).render(
         <LaneProvider>
           <TrafficLightsProvider>
             <VehicleProvider>
-              <App />
+              <AccidentProvider>
+                <App />
+              </AccidentProvider>
             </VehicleProvider>
           </TrafficLightsProvider>
         </LaneProvider>

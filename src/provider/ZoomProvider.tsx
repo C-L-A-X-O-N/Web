@@ -13,13 +13,13 @@ export const ZoomProvider = ({ children }: { children: ReactNode }) => {
     const {send, createEffectHandler} = useWebSocket();
 
     const updateZoom = () => {
-        console.log("UPDATING ZOOM", map);
+        //console.log("UPDATING ZOOM", map);
         if (!map) {
-            console.warn("Map is not ready yet, skipping zoom update.");
+            //console.warn("Map is not ready yet, skipping zoom update.");
             return;
         }
         if (!ready) {
-            console.warn("Map is not ready yet, skipping zoom update.");
+            //console.warn("Map is not ready yet, skipping zoom update.");
             return;
         }
         setBound(map.getBounds());
