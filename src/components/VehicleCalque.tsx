@@ -119,6 +119,14 @@ function VehicleCalque() {
         if (zoom < 16) {
             return false;
         }
+        if (!vehicle.position || !Array.isArray(vehicle.position) || vehicle.position.length !== 2) {
+            console.warn("Vehicle position is invalid:", vehicle.id, vehicle.position);
+            return false;
+        }
+        if (!vehicle.position[0] || !vehicle.position[1]) {
+            console.warn("Vehicle position coordinates are missing:", vehicle.id, vehicle.position);
+            return false;
+        }
         if (bound) {
             const latLng = L.latLng({
                 lat: vehicle.position[1],
@@ -146,8 +154,8 @@ function VehicleCalque() {
             (isPtrintable(zoom, bound, vehicle) && <Marker
                 key={vehicle.id}
                 position={{
-                    lat: vehicle.position[1],
-                    lng: vehicle.position[0]
+                    lat: vehicle.position[1] ?? 0,
+                    lng: vehicle.position[0] ?? 0
                 }}
                 icon={getVehicleIcon(vehicle, zoom)}
                 eventHandlers={{

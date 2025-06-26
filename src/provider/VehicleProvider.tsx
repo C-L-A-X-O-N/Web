@@ -27,7 +27,7 @@ export const VehicleProvider = ({children}: { children: ReactNode }) => {
                 console.info("Vehicle update ignored due to focus state");
                 return;
             }
-            const newVehicules = vehiclesMap
+            const newVehicules = new Map<string, Vehicle>();
             data.forEach((veh) => {
                 newVehicules.set(veh.id, veh)
             })
