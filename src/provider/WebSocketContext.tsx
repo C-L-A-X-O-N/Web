@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useRef } from 'react';
+import type { ReactNode } from 'react';
 import { EventEmitter } from '../eventEmitter';
 import { useFocus } from './FocusProvider';
 
@@ -10,7 +11,12 @@ const WebSocketContext = createContext<{
 }>({} as any);
 
 
-export const WebSocketProvider = ({ url, children }) => {
+type WebSocketProviderProps = {
+  url: string;
+  children: ReactNode;
+};
+
+export const WebSocketProvider = ({ url, children }: WebSocketProviderProps) => {
   const socketRef = useRef<WebSocket>({} as WebSocket);
   const emitterRef = useRef<EventEmitter>(new EventEmitter());
   const {isFocused} = useFocus();
@@ -59,6 +65,12 @@ export const WebSocketProvider = ({ url, children }) => {
 
   const send = (type: string, data: any) => {
     const message = JSON.stringify({ type, data });
+    if (type.startsWith("command/traffic_light")) {
+      console.info("📤 [WebSocket] send:", { type, data });
+    }
+    if (type.startsWith("session/update_lights")) {
+      console.info("📤 [WebSocket] send:", { type, data });
+    }
     if (socketRef.current.readyState !== WebSocket.OPEN) {
       console.error('WebSocket is not open. Cannot send message:', message);
       return;
