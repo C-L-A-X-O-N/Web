@@ -87,6 +87,28 @@ function VehicleCalque() {
                 iconSize: [size, size*4],
                 iconAnchor: [size/2, size*2],
             });
+        } else if(vehicle.type === "emergency__emergency") {
+            icon =L.divIcon({
+                className: 'vehicle-icon-wrapper',
+                html: `
+                <div style="
+                    width: ${size}px;
+                    height: ${size*4}px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    transform: rotate(${angle}deg);
+                    transform-origin: center center;
+                ">
+                    <img 
+                        src="/assets/emergency_car.svg" 
+                        style="width: ${size}px; height: ${size*4}px; display: block;" 
+                    />
+                </div>`,
+                iconSize: [size, size*4],
+                iconAnchor: [size/2, size*2],
+            });
+
         }else{
             console.warn("Unknown vehicle type:", vehicle.type);
             icon = L.divIcon({
@@ -116,7 +138,7 @@ function VehicleCalque() {
     }
 
     const isPtrintable = (zoom: number, bound: any, vehicle: Vehicle) => {
-        if (zoom < 16) {
+        if (zoom < 17) {
             return false;
         }
         if (!vehicle.position || !Array.isArray(vehicle.position) || vehicle.position.length !== 2) {
@@ -133,7 +155,7 @@ function VehicleCalque() {
                 lng: vehicle.position[0]
             });
             if (bound.contains(latLng) === false) {
-                console.warn("Vehicle position is outside of the current map bounds:", vehicle.id, vehicle.position, "Zoom level:", zoom);
+                // console.warn("Vehicle position is outside of the current map bounds:", vehicle.id, vehicle.position, "Zoom level:", zoom);
                 return false;
             }
             //return bound.contains(latLng);
