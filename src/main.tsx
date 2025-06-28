@@ -7,19 +7,30 @@ import { LaneProvider } from './provider/LaneProvider.tsx'
 import { TrafficLightsProvider } from './provider/TrafficLightsProvider.tsx'
 import { FocusProvider } from './provider/FocusProvider.tsx'
 import { VehicleProvider } from './provider/VehicleProvider.tsx'
+import { useConfig } from './hooks/useConfig'
 
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <FocusProvider>
-      <WebSocketProvider url="ws://localhost:7900">
-        <LaneProvider>
-          <TrafficLightsProvider>
-            <VehicleProvider>
-              <App />
-            </VehicleProvider>
-          </TrafficLightsProvider>
-        </LaneProvider>
-      </WebSocketProvider>
-    </FocusProvider>
-  </StrictMode>,
-)
+const AppWithConfig = () => {
+  const { config, loading } = useConfig();
+
+  if (loading) {
+    return <div>Loading configuration...</div>;
+  }
+
+  return (
+    <StrictMode>
+      <FocusProvider>
+        <WebSocketProvider url={config.websocketUrl}>
+          <LaneProvider>
+            <TrafficLightsProvider>
+              <VehicleProvider>
+                <App />
+              </VehicleProvider>
+            </TrafficLightsProvider>
+          </LaneProvider>
+        </WebSocketProvider>
+      </FocusProvider>
+    </StrictMode>
+  );
+};
+
+createRoot(document.getElementById('root')!).render(<AppWithConfig />);
